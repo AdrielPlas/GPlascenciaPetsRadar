@@ -73,7 +73,13 @@ export class FoundPetsService {
     // 3. Enviar correo por cada coincidencia
     let notificationsSent = 0;
     for (const lostPet of nearbyLostPets) {
-      const html = generateFoundPetEmailTemplate(dto, lostPet, lostPet.distance, lostPet.lost_lat, lostPet.lost_lon);
+      const html = generateFoundPetEmailTemplate(
+        dto,
+        lostPet,
+        lostPet.distance,
+        lostPet.lost_lat,
+        lostPet.lost_lon,
+      );
 
       const options: EmailOptions = {
         to: NOTIFICATION_EMAIL,
@@ -90,5 +96,12 @@ export class FoundPetsService {
       matchesFound: nearbyLostPets.length,
       notificationsSent,
     };
+  }
+
+  /** Retorna todas las mascotas encontradas (con caché en el controlador) */
+  async findAll(): Promise<FoundPet[]> {
+    return this.foundPetRepository.find({
+      order: { created_at: 'DESC' },
+    });
   }
 }
